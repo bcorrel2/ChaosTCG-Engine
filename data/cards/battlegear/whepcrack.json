@@ -1,36 +1,35 @@
 {
-  "id": "BG-DOP163-WHEPCRACK-v1",
+  "id": "GEAR-WHEPCRACK-DOP163-v1",
   "name": "Whepcrack",
   "type": "BattleGear",
   "rarity": "Super Rare",
-  "set": {
-    "name": "Dawn of Perim",
-    "number": 163
-  },
-  "rules_text": "Equipped Creature has +15 Power. If the equipped Creature is an UnderWorlder, it gains Fire 5.",
+  "set": { "name": "Dawn of Perim", "number": 163 },
+  "artist": null,
+
+  "unique": false,
+
+  "rules_text": "Equipped Creature gains 15 Power.\n\nIf equipped Creature is UnderWorld, it gains \"Fire 5\".",
+
   "effects": [
     {
-      "id": "eff-whepcrack-power-buff",
-      "label": "Power Enhancement",
+      "id": "eff-whepcrack-power-plus15",
+      "label": "Equipped Creature has +15 Power",
       "type": "Continuous",
-      "target": { "type": "EquippedCreature", "controller": "self" },
-      "modifiers": {
-        "power": 15
+      "effect": {
+        "kind": "ModifyDiscipline",
+        "discipline": "Power",
+        "amount": 15
       }
     },
     {
-      "id": "eff-whepcrack-element-bonus",
-      "label": "Tribal Fire Bonus",
+      "id": "eff-whepcrack-underworld-fire5",
+      "label": "If Equipped Creature is UnderWorld: Fire 5",
       "type": "Conditional",
-      "condition": {
-        "tribe": "UnderWorlders"
-      },
-      "target": { "type": "EquippedCreature", "controller": "self" },
-      "grant": {
-        "element": "Fire",
-        "bonus": 5
-      }
+      "condition": { "stat": "Tribe", "operator": "==", "value": "UnderWorlders" },
+      "target": { "type": "EquippedCreature", "controller": "owner" },
+      "grant": { "element": "Fire", "bonus": 5 }
     }
   ],
+
   "flavor_text": null
 }

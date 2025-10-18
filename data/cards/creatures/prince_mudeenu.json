@@ -1,0 +1,52 @@
+{
+  "id": "CRE-MI-PRINCE-MUDEENU-DOP77-v1",
+  "name": "Prince Mudeenu",
+  "type": "Creature",
+  "tribe": "Mipedians",
+  "subtypes": ["Royal"],
+
+  "rarity": "Super Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 77
+  },
+  "artist": null,
+
+  "unique": true,
+
+  "base_stats": {
+    "courage": 55,
+    "power": 35,
+    "wisdom": 70,
+    "speed": 30,
+    "energy": 45
+  },
+  "stat_ranges": {
+    "courage": [45, 65],
+    "power": [25, 45],
+    "wisdom": [60, 80],
+    "speed": [20, 40],
+    "energy": [40, 50]
+  },
+
+  "mugic_counters": 1,
+  "elements": [],
+
+  "rules_text": "Invisibility: Strike 20.",
+
+  "abilities": [
+    {
+      "id": "abl-invisibility-strike20",
+      "label": "Invisibility: Strike 20",
+      "type": "Triggered",
+      "trigger": { "event": "CombatStart" },
+      "effect": {
+        "kind": "PreemptiveDamage",
+        "amount": 20
+      },
+      "text": "At the start of combat, deal 20 damage to the opposing Creature."
+    }
+  ],
+
+  "flavor_text": "Obsessed with controlling the Cothica, he will risk the freedom of the Mipedians to find it."
+}

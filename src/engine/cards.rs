@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::fmt;
 
 /// Top-level card enum can deserialize mixed lists (e.g., a single bundle).
 /// This uses the `"type"` field in the JSON as an internal tag.
@@ -28,7 +29,20 @@ pub enum Tribe {
     Mipedians,
     Danians,
     #[serde(rename = "M'arrillians")]
-    MArrillians,
+    Marrillians,
+}
+
+impl fmt::Display for Tribe {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = match self {
+            Tribe::OverWorlders => "OverWorlders",
+            Tribe::UnderWorlders => "UnderWorlders",
+            Tribe::Mipedians => "Mipedians",
+            Tribe::Danians => "Danians",
+            Tribe::Marrillians => "M'arrillians",
+        };
+        write!(f, "{}", s)
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq, Hash)]
@@ -38,6 +52,17 @@ pub enum Element {
     Air,
     Earth,
     Water,
+}
+
+impl fmt::Display for Element {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Element::Fire  => write!(f, "Fire"),
+            Element::Water => write!(f, "Water"),
+            Element::Air   => write!(f, "Air"),
+            Element::Earth => write!(f, "Earth"),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -68,13 +93,16 @@ pub struct CreatureCard {
     #[serde(default)]
     pub subtypes: Vec<String>,
     #[serde(default)]
-    pub unique: bool,
-    #[serde(default)]
     pub loyal: bool,
 
     pub rarity: String,
     pub set: CardSet,
-    pub artist: String,
+
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub artist: Option<String>,
+
+    #[serde(default)]
+    pub unique: bool,
 
     pub base_stats: Stats,
     pub stat_ranges: StatsRange,
@@ -113,6 +141,8 @@ pub enum AbilityType {
     Activated,
     Triggered,
     Innate,
+    Continuous,
+    Conditional
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -222,13 +252,25 @@ pub struct StatModifiers {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Condition {
-    Stat {
-        stat: String,        // "courage", "power", ...
-        operator: String,    // ">=", ">", "==", etc.
-        value: i16,
+    /// Generic comparator:
+    /// {"stat":"Tribe","operator":"==","value":"Mipedians"}
+    /// {"stat":"Engaged","operator":"==","value":true}
+    /// {"stat":"Power","operator":">=","value":75}
+    Compare {
+        stat: String,
+        operator: String,
+        #[serde(default)]
+        value: serde_json::Value, // allows string/number/bool/null
     },
-    Tribe {
-        tribe: Tribe,
+
+    /// Conjunction of conditions: {"all":[ {...}, {...} ]}
+    All {
+        all: Vec<Condition>,
+    },
+
+    /// Disjunction of conditions: {"any":[ {...}, {...} ]}
+    Any {
+        any: Vec<Condition>,
     },
 }
 
@@ -236,8 +278,21 @@ pub enum Condition {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Trigger {
-    pub event: String,                    // e.g., "AttackPlayed"
-    pub source: String,                   // "Creature" | "Self"
+    pub event: String,                          // e.g. "AttackPlayed", "CombatStart", "BeforeMugicCast"
+
+    // Make everything else optional/with defaults so older JSON parses cleanly.
+    #[serde(default)]
+    pub source: Option<String>,                 // e.g. "Attacker", "Defender", "Self", "Any"
+
+    #[serde(default)]
+    pub first_attack_this_combat: bool,         // used by Mipedim Oasis
+
+    // Add other flags you might have referenced elsewhere; keep them optional:
+    #[serde(default)]
+    pub at_location_activation: bool,           // if you used similar flags
+    #[serde(default)]
+    pub when_revealed: bool,                // "Creature" | "Self"
+
     #[serde(default)]
     pub condition: Option<Condition>,     // Optional extra filter
 }
@@ -255,23 +310,53 @@ pub struct Challenge {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Effect {
     pub kind: EffectKind,
-    #[serde(default)]
-    pub amount: Option<i16>,          // for Heal/Damage numeric amounts
-    #[serde(default)]
-    pub scope: Option<String>,        // e.g., "TargetEffect" for counters
+    #[serde(default)] pub amount: Option<i16>,
+    #[serde(default)] pub discipline: Option<String>,
+    #[serde(default)] pub duration: Option<String>,
+    #[serde(default)] pub elements: Option<Vec<String>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "PascalCase")]
 pub enum EffectKind {
     Heal,
-    Damage,
-    Buff,
-    Debuff,
-    Counter,
+    Damage,                 // ← needed by logic.rs (Combat / stat checks)
     GrantAbility,
     SwitchBattlegear,
     Move,
+    Counter,
+
+    // Discipline & Damage modifiers
+    ModifyDiscipline,       // e.g., Lightning Burst (-25 Power EOT), Gothos Tower
+    ModifyDamage,           // e.g., Everrain, Gloomuck, Storm Tunnel
+    SetAttackDamage,        // e.g., Crystal Cave (first attack deals 0)
+
+    // Mugic / Counters / Keywords
+    ModifyMugicCost,        // Stone/Glacier/Wooden Pillar
+    AddMugicCounters,       // Castle Pillar, Gigantempopolis
+    ActivateKeyword,        // Mount Pillar (Hive)
+
+    // Elements / Properties
+    GrantElements,          // Stronghold Morn
+    GrantProperty,          // Lake Ken-I-Po (Untargetable)
+
+    // Cards/z=Zones and Play Restrictions
+    ReturnCard,             // Castle Bodhran (discard → hand)
+    RevealCards,            // Windslash (flip gear)
+    RestrictPlay,           // Runic Grove (only Generic Mugic)
+    DisableActions,         // Dranakis Threshold (no Mugic/activated)
+
+    // Deck manipulation
+    DeckManipulation,       // Ravanaugh Ridge (scry 3)
+
+    // Movement mode (from gear)
+    GainMovementMode,       // Mipedian Cactus (teleport)
+
+    // Scaling energy (Danian)
+    ModifyEnergyPerCondition,
+
+    // Pre-combat strike
+    PreemptiveDamage,
 }
 
 /// Used by some BattleGear effects like "Fire 5".
@@ -298,51 +383,21 @@ pub struct StatCheck {
 /// - triggered effects with challenges,
 /// - instant damage,
 /// - temporary buffs (via duration),
-/// without forcing you to rebuild the schema as you add cards.
-///
-/// This structure is intentionally permissive and matches all examples
-/// you've provided (Ring of Na'arin, Whepcrack, Kiru City, UnderWorld City,
-/// Decrescendo, Fortissimo, Flame Orb).
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EffectNode {
     pub id: String,
     pub label: String,
     #[serde(rename = "type")]
-    pub node_type: String, // "Continuous" | "Conditional" | "Triggered" | "Instant" | "TemporaryBuff" etc.
+    pub node_type: String,
 
-    #[serde(default)]
-    pub target: Option<Target>,
-
-    // For Continuous/Conditional modifiers:
-    #[serde(default)]
-    pub modifiers: Option<StatModifiers>,
-
-    #[serde(default)]
-    pub condition: Option<Condition>,
-
-    // For Triggered hooks:
-    #[serde(default)]
-    pub trigger: Option<Trigger>,
-
-    // For Location's "Challenge" or Attack's "Stat Check":
-    #[serde(default)]
-    pub challenge: Option<Challenge>,
-
-    // For Effects That Require Comparing a Stat to a Sccuess Threshold
-    #[serde(default)]
-    pub stat_check: Option<StatCheck>,
-
-    // For Attack's or Mugic's immediate payload (Decrescendo pattern)
-    #[serde(default)]
-    pub effect: Option<Effect>,
-
-    // For BattleGear-style "Fire 5" grants:
-    #[serde(default)]
-    pub grant: Option<ElementGrant>,
-
-    // For temporary buffs (Fortissimo pattern):
-    #[serde(default)]
-    pub duration: Option<Duration>,
+    #[serde(default)] pub trigger: Option<Trigger>,
+    #[serde(default)] pub condition: Option<Condition>,
+    #[serde(default)] pub target: Option<Target>,
+    #[serde(default)] pub effect: Option<Effect>,
+    #[serde(default)] pub grant: Option<ElementGrant>,
+    #[serde(default)] pub challenge: Option<Challenge>,
+    #[serde(default)] pub modifiers: Option<StatModifiers>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

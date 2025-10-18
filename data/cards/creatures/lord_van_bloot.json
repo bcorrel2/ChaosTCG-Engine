@@ -1,0 +1,58 @@
+{
+  "id": "CRE-UW-LORD-VAN-BLOOT-DOP42-v1",
+  "name": "Lord Van Bloot",
+  "type": "Creature",
+  "tribe": "UnderWorlders",
+  "subtypes": ["Conquerer", "Muge"],
+
+  "rarity": "Ultra Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 42
+  },
+  "artist": null,
+
+  "unique": true,
+
+  "base_stats": {
+    "courage": 75,
+    "power": 115,
+    "wisdom": 50,
+    "speed": 95,
+    "energy": 65
+  },
+  "stat_ranges": {
+    "courage": [65, 85],
+    "power": [105, 125],
+    "wisdom": [40, 60],
+    "speed": [85, 105],
+    "energy": [60, 70]
+  },
+
+  "mugic_counters": 2,
+  "elements": ["Earth"],
+
+  "rules_text": "If the opposing Creature's Courage is less than 65, that Creature loses 10 Energy.",
+
+  "abilities": [
+    {
+      "id": "abl-lvb-courage-threshold-dmg10",
+      "label": "Opposing Courage < 65: Deal 10",
+      "type": "Triggered",
+      "trigger": { "event": "CombatStart" },
+      "condition": {
+        "stat": "OpponentCourage",
+        "operator": "<",
+        "value": 65
+      },
+      "target": { "type": "OpposingEngagedCreature", "controller": "opponent" },
+      "effect": {
+        "kind": "Damage",
+        "amount": 10
+      },
+      "text": "At the start of combat, if the opposing Creature's Courage is less than 65, it loses 10 Energy."
+    }
+  ],
+
+  "flavor_text": "\"I may serve Chaor, but in time, Chaor will serve me!\" —Lord Van Bloot"
+}

@@ -1,0 +1,41 @@
+{
+  "id": "ATK-WINDSLASH-DOP135-v1",
+  "name": "Windslash",
+  "type": "Attack",
+  "rarity": "Uncommon",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 135
+  },
+  "artist": "David Rodriguez & Emilio Lopez",
+
+  "unique": false,
+
+  "build_points": 1,
+
+  "damage": {
+    "base": 5,
+    "fire": 0,
+    "air": 0,
+    "earth": 0,
+    "water": 0
+  },
+
+  "rules_text": "Target opponent turns all face-down Battlegear Cards they control face up.",
+
+  "effects": [
+    {
+      "id": "eff-reveal-battlegear",
+      "label": "Reveal All Opponent Battlegear",
+      "type": "OnPlay",
+      "target": { "type": "Player", "controller": "opponent" },
+      "effect": {
+        "kind": "RevealCards",
+        "target_zone": "BattleGear",
+        "condition": { "face_down": true }
+      }
+    }
+  ],
+
+  "flavor_text": null
+}

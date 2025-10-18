@@ -1,0 +1,47 @@
+{
+  "id": "ATK-LIGHTNING-BURST-BTD107-v1",
+  "name": "Lightning Burst",
+  "type": "Attack",
+  "rarity": "Uncommon",
+  "set": {
+    "name": "Beyond the Doors",
+    "number": 107
+  },
+  "artist": null,
+
+  "unique": false,
+
+  "build_points": 1,
+
+  "damage": {
+    "base": 5,
+    "fire": 0,
+    "air": 5,
+    "earth": 0,
+    "water": 0
+  },
+
+  "rules_text": "Air: Opposing Creature loses 25 Power until the end of the turn.",
+
+  "effects": [
+    {
+      "id": "eff-air-opponent-minus25-power",
+      "label": "Air: Opponent loses 25 Power",
+      "type": "Conditional",
+      "condition": {
+        "stat": "Element",
+        "operator": "==",
+        "value": "Air"
+      },
+      "target": { "type": "Creature", "controller": "opponent" },
+      "effect": {
+        "kind": "ModifyDiscipline",
+        "discipline": "Power",
+        "amount": -25,
+        "duration": "EndOfTurn"
+      }
+    }
+  ],
+
+  "flavor_text": null
+}

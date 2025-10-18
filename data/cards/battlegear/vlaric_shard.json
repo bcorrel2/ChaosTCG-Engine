@@ -1,0 +1,30 @@
+{
+  "id": "BG-VLARIC-SHARD-DOP162-v1",
+  "name": "Vlaric Shard",
+  "type": "BattleGear",
+  "rarity": "Uncommon",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 162
+  },
+  "artist": null,
+
+  "unique": false,
+
+  "rules_text": "Equipped Creature gains \"Earth 5 (Earth attacks made by this Creature deal an additional 5 damage.)\"",
+
+  "effects": [
+    {
+      "id": "eff-grant-earth5",
+      "label": "Grant Earth 5",
+      "type": "Continuous",
+      "target": { "type": "EquippedCreature", "controller": "owner" },
+      "grant": {
+        "element": "Earth",
+        "bonus": 5
+      }
+    }
+  ],
+
+  "flavor_text": null
+}

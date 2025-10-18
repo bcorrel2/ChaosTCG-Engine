@@ -1,5 +1,6 @@
 use crate::engine::cards::*;
 use std::collections::{HashMap, HashSet};
+use serde_json::Value;
 
 /* ---------- Runtime structs ---------- */
 
@@ -14,6 +15,8 @@ pub struct CreatureInstance {
     pub courage: i32,
     pub speed: i32,
     pub mugic: i32,
+    pub equipped_gear: Option<BattleGearCard>,
+    pub attacks_this_combat: u8,
 }
 
 impl From<&CreatureCard> for CreatureInstance {
@@ -30,33 +33,113 @@ impl From<&CreatureCard> for CreatureInstance {
             courage: c.base_stats.courage as i32,
             speed: c.base_stats.speed as i32,
             mugic: c.mugic_counters as i32,
+            equipped_gear: None,
+            attacks_this_combat: 0
         }
     }
 }
 
 /* ---------- Simple helpers ---------- */
 
-fn cond_passes(cre: &CreatureInstance, cond: &Condition) -> bool {
-    match cond {
-        Condition::Stat { stat, operator, value } => {
-            let lhs = match stat.as_str() {
-                "courage" => cre.courage,
-                "power"   => cre.power,
-                "wisdom"  => cre.wisdom,
-                "speed"   => cre.speed,
-                "energy"  => cre.current_energy,
-                _ => return false,
-            };
-            match operator.as_str() {
-                ">=" => lhs >= *value as i32,
-                ">"  => lhs >  *value as i32,
-                "==" => lhs == *value as i32,
-                "<=" => lhs <= *value as i32,
-                "<"  => lhs <  *value as i32,
-                _    => false
+fn parse_element(s: &str) -> Option<Element> {
+    match s.to_ascii_lowercase().as_str() {
+        "fire"  => Some(Element::Fire),
+        "air"   => Some(Element::Air),
+        "earth" => Some(Element::Earth),
+        "water" => Some(Element::Water),
+        _ => None,
+    }
+}
+
+fn tribe_eq(cre: &CreatureInstance, rhs: &str) -> bool {
+    rhs.eq_ignore_ascii_case(&cre.card.tribe.to_string())
+}
+
+/// Compare a left and right JSON value using a string operator.
+/// Supports strings, numbers (as i64), and bools. Unknown types -> false.
+fn compare_json(lhs: &Value, op: &str, rhs: &Value) -> bool {
+    match (lhs, rhs) {
+        (Value::String(a), Value::String(b)) => match op {
+            "==" => a.eq_ignore_ascii_case(b),
+            "!=" => !a.eq_ignore_ascii_case(b),
+            _ => false,
+        },
+        (Value::Bool(a), Value::Bool(b)) => match op {
+            "==" => a == b,
+            "!=" => a != b,
+            _ => false,
+        },
+        // Treat numbers as i64; adjust to f64 if you need fractions later
+        (Value::Number(a), Value::Number(b)) => {
+            let (Some(la), Some(rb)) = (a.as_i64(), b.as_i64()) else { return false; };
+            match op {
+                "==" => la == rb,
+                "!=" => la != rb,
+                ">"  => la >  rb,
+                ">=" => la >= rb,
+                "<"  => la <  rb,
+                "<=" => la <= rb,
+                _    => false,
             }
         }
-        Condition::Tribe { tribe } => &cre.card.tribe == tribe,
+        _ => false,
+    }
+}
+
+pub fn cond_passes(cre: &CreatureInstance, cond: &Condition) -> bool {
+    match cond {
+        Condition::All { all } => all.iter().all(|c| cond_passes(cre, c)),
+        Condition::Any { any } => any.iter().any(|c| cond_passes(cre, c)),
+
+        Condition::Compare { stat, operator, value } => {
+            let stat_lc = stat.to_ascii_lowercase();
+
+            // Map engine state to a JSON value we can compare with `compare_json`.
+            // Handle common custom stats first.
+            match stat_lc.as_str() {
+                // --- Numbers (disciplines/energy) ---
+                "courage" => return compare_json(&Value::from(cre.courage), operator, value),
+                "power"   => return compare_json(&Value::from(cre.power),   operator, value),
+                "wisdom"  => return compare_json(&Value::from(cre.wisdom),  operator, value),
+                "speed"   => return compare_json(&Value::from(cre.speed),   operator, value),
+                "energy"  => return compare_json(&Value::from(cre.current_energy), operator, value),
+
+                // --- Name / Tribe as strings ---
+                "name" => {
+                    // If you don't store the name on the instance, use `cre.card.name.clone()`
+                    let my_name = Value::from(cre.card.name.clone());
+                    return compare_json(&my_name, operator, value);
+                }
+                "tribe" => {
+                    if let Some(rhs) = value.as_str() {
+                        // Only support equality/inequality for string tribe compare
+                        return match operator.as_str() {
+                            "==" => tribe_eq(cre, rhs),
+                            "!=" => !tribe_eq(cre, rhs),
+                            _    => false,
+                        };
+                    }
+                    return false;
+                }
+
+                // --- Element membership: {"stat":"Element","operator":"==","value":"Air"} ---
+                "element" => {
+                    if let Some(elem_str) = value.as_str() {
+                        if let Some(elem) = parse_element(elem_str) {
+                            // Equality means "has this element", inequality means "does not have"
+                            return match operator.as_str() {
+                                "==" => cre.elements.contains(&elem),
+                                "!=" => !cre.elements.contains(&elem),
+                                _    => false,
+                            };
+                        }
+                    }
+                    return false;
+                }
+                // Fallback: unknown stat
+                _ => false,
+            }
+        }
     }
 }
 
@@ -81,37 +164,79 @@ fn stat_value(cre: &CreatureInstance, disc: &str) -> i32 {
 
 /* ---------- Public API for the test ---------- */
 
+// src/engine/logic.rs
+
 pub fn equip_battlegear(cre: &mut CreatureInstance, gear: &BattleGearCard) {
+    cre.equipped_gear = Some(gear.clone());
+    apply_battlegear_effects(cre, gear);
+}
+
+// src/engine/logic.rs
+
+fn apply_battlegear_effects(cre: &mut CreatureInstance, gear: &BattleGearCard) {
     for node in &gear.effects {
-        match node.node_type.as_str() {
-            "Continuous" => {
-                if let Some(mods) = &node.modifiers {
-                    apply_stat_mods(cre, mods);
+        let kind = node.node_type.to_ascii_lowercase();
+
+        match kind.as_str() {
+            // Always-on effects
+            "continuous" => {
+                if let Some(eff) = &node.effect {
+                    let _ = apply_effect_to_creature(cre, eff);
                 }
-                if let Some(grant) = &node.grant {
-                    cre.elements.insert(grant.element);
-                    if grant.bonus != 0 {
-                        *cre.elemental_bonus.entry(grant.element).or_insert(0) += i32::from(grant.bonus);
-                    }
-                }
-            }
-            "Conditional" => {
-                if let Some(cond) = &node.condition {
-                    if cond_passes(cre, cond) {
-                        if let Some(mods) = &node.modifiers {
-                            apply_stat_mods(cre, mods);
-                        }
-                        if let Some(grant) = &node.grant {
-                            cre.elements.insert(grant.element);
-                            if grant.bonus != 0 {
-                                *cre.elemental_bonus.entry(grant.element).or_insert(0) += i32::from(grant.bonus);
-                            }
-                        }
-                    }
+                if let Some(gr) = &node.grant {
+                    apply_element_grant(cre, gr);
                 }
             }
-            _ => {}
+
+            // Conditional effects (e.g., Whepcrack: UnderWorld → Fire 5)
+            "conditional" => {
+                let cond_ok = node.condition.as_ref().map_or(false, |c| cond_passes(cre, c));
+                if !cond_ok { continue; }
+
+                if let Some(eff) = &node.effect {
+                    let _ = apply_effect_to_creature(cre, eff);
+                }
+                if let Some(gr) = &node.grant {
+                    apply_element_grant(cre, gr);
+                }
+            }
+
+            _ => { /* ignore other node types here */ }
         }
+    }
+}
+
+fn apply_element_grant(cre: &mut CreatureInstance, grant: &ElementGrant) {
+    let elem = grant.element.clone();
+    cre.elements.insert(elem.clone());
+    *cre.elemental_bonus.entry(elem).or_insert(0) += i32::from(grant.bonus);
+}
+
+use crate::engine::cards::{Effect, EffectKind};
+
+/// Apply a single effect to a creature's live stats.
+/// Returns true if anything was applied.
+fn apply_effect_to_creature(cre: &mut CreatureInstance, eff: &Effect) -> bool {
+    match eff.kind {
+        EffectKind::ModifyDiscipline => {
+            // amount is i16 in JSON; convert safely
+            let amt: i32 = eff.amount.unwrap_or(0).into();
+            // be forgiving about case in JSON: "Energy", "energy", etc.
+            let d = eff.discipline.as_deref().unwrap_or("").to_ascii_lowercase();
+            match d.as_str() {
+                "courage" => { cre.courage += amt; true }
+                "power"   => { cre.power   += amt; true }
+                "wisdom"  => { cre.wisdom  += amt; true }
+                "speed"   => { cre.speed   += amt; true }
+                "energy"  => {
+                    cre.current_energy += amt;
+                    if cre.current_energy < 0 { cre.current_energy = 0; }
+                    true
+                }
+                _ => false, // unknown discipline; ignore
+            }
+        }
+        _ => false, // not handled here (fine for now)
     }
 }
 
@@ -138,34 +263,51 @@ pub fn apply_location(creatures: &mut [&mut CreatureInstance], loc: &LocationCar
     }
 }
 
-pub fn add_location_attack_bonus(attacker: &CreatureInstance, _defender: &CreatureInstance, loc: &LocationCard) -> i32 {
-    let mut extra = 0;
-    for node in &loc.effects {
-        if node.node_type == "Triggered" {
-            if let Some(trg) = &node.trigger {
-                if trg.event == "AttackPlayed" {
-                    // Check optional tribe condition
-                    let cond_ok = if let Some(cond) = &trg.condition {
-                        cond_passes(attacker, cond)
-                    } else { true };
+fn is_attack_event(s: &str) -> bool {
+    let e = s.to_ascii_lowercase();
+    e == "attackplayed" || e == "attack" || e == "onattack"
+}
 
-                    if cond_ok {
-                        if let Some(ch) = &node.challenge {
-                            let val = stat_value(attacker, &ch.discipline);
-                            if val >= ch.threshold as i32 {
-                                if ch.success_effect.kind == EffectKind::Damage {
-                                    if let Some(a) = ch.success_effect.amount {
-                                        extra += i32::from(a); // ← cast i16 → i32
-                                    }
-                                }
-                            }
-                        }
-                    }
+pub fn add_location_attack_bonus(
+    attacker: &CreatureInstance,
+    defender: &CreatureInstance,
+    loc: &LocationCard,
+) -> i32 {
+    use crate::engine::cards::EffectKind;
+    let mut extra = 0;
+
+    for node in &loc.effects {
+        if !node.node_type.eq_ignore_ascii_case("Triggered") { continue; }
+        let trg = match &node.trigger { Some(t) => t, None => continue };
+        if !is_attack_event(&trg.event) { continue; }
+
+        // (If you wired first-attack flags, handle them here; otherwise ignore.)
+
+        // Condition (e.g., Tribe == UnderWorlders)
+        if let Some(cond) = &node.condition {
+            if !cond_passes(attacker, cond) { continue; }
+        }
+
+        // Direct damage/modify-damage on the node
+        if let Some(eff) = &node.effect {
+            if eff.kind == EffectKind::ModifyDamage || eff.kind == EffectKind::Damage {
+                if let Some(a) = eff.amount { extra += i32::from(a); }
+            }
+        }
+
+        // Challenge (e.g., Power 15: Deal 5)
+        if let Some(ch) = &node.challenge {
+            let val = stat_value(attacker, &ch.discipline); // includes gear mods
+            if val >= ch.threshold as i32 {
+                let se = &ch.success_effect;
+                if (se.kind == EffectKind::ModifyDamage || se.kind == EffectKind::Damage) && se.amount.is_some() {
+                    extra += i32::from(se.amount.unwrap());
                 }
             }
         }
     }
-    extra as i32
+
+    extra
 }
 
 pub fn compute_attack_damage(attacker: &CreatureInstance, _defender: &CreatureInstance, atk: &AttackCard) -> i32 {
@@ -190,7 +332,7 @@ pub fn compute_attack_damage(attacker: &CreatureInstance, _defender: &CreatureIn
 
     // Stat checks (i.e. Flame Orb "Power 75: +10")
     for node in &atk.effects {
-        if let Some(sc) = &node.stat_check {
+        if let Some(sc) = &node.challenge {
             let val = stat_value(attacker, &sc.discipline);
             if val >= sc.threshold as i32 {
                 if sc.success_effect.kind == EffectKind::Damage {

@@ -1,0 +1,58 @@
+{
+  "id": "BG-MIPEDIAN-CACTUS-DOP144-v1",
+  "name": "Mipedian Cactus",
+  "type": "BattleGear",
+  "rarity": "Super Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 144
+  },
+  "artist": null,
+
+  "unique": false,
+
+  "rules_text": "Equipped Creature gains 15 Wisdom. If the Equipped Creature is Mipedian, it gains \"Cost 1 Mugic counter — until end of turn, this Creature can move to any space on the board.\"",
+
+  "effects": [
+    {
+      "id": "eff-wisdom-modify-plus15",
+      "label": "Equipped Creature gains +15 Wisdom",
+      "type": "Continuous",
+      "target": { "type": "EquippedCreature", "controller": "owner" },
+      "effect": {
+        "kind": "ModifyDiscipline",
+        "discipline": "Wisdom",
+        "amount": 15
+      }
+    },
+    {
+      "id": "eff-mipedian-grant-teleport-activated",
+      "label": "If Equipped Creature is Mipedian: Pay 1 Mugic → Teleport until EOT",
+      "type": "Conditional",
+      "condition": {
+        "stat": "Tribe",
+        "operator": "==",
+        "value": "Mipedians"
+      },
+      "target": { "type": "EquippedCreature", "controller": "owner" },
+      "effect": {
+        "kind": "GrantAbility",
+        "ability": {
+          "id": "abl-teleport-any-space-eot",
+          "label": "Teleport (pay 1 Mugic)",
+          "type": "Activated",
+          "cost": { "mugic": 1 },
+          "timing": "Any",
+          "effect": {
+            "kind": "GainMovementMode",
+            "mode": "TeleportAnywhere",
+            "duration": "EndOfTurn"
+          },
+          "text": "Pay 1 Mugic counter: Until end of turn, this Creature can move to any space on the board."
+        }
+      }
+    }
+  ],
+
+  "flavor_text": null
+}

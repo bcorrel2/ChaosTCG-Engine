@@ -1,0 +1,54 @@
+{
+  "id": "CRE-DA-ODU-BATHAX-DOP68-v1",
+  "name": "Odu-Bathax",
+  "type": "Creature",
+  "tribe": "Danians",
+  "subtypes": ["Warrior"],
+
+  "rarity": "Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 68
+  },
+  "artist": null,
+
+  "unique": false,
+
+  "base_stats": {
+    "courage": 55,
+    "power": 60,
+    "wisdom": 50,
+    "speed": 40,
+    "energy": 35
+  },
+  "stat_ranges": {
+    "courage": [45, 65],
+    "power": [50, 70],
+    "wisdom": [40, 60],
+    "speed": [30, 50],
+    "energy": [30, 40]
+  },
+
+  "mugic_counters": 1,
+  "elements": ["Earth"],
+
+  "rules_text": "Odu-Bathax gains 5 Energy for each Mandiblor you control.",
+
+  "abilities": [
+    {
+      "id": "abl-odu-bathax-energy-per-mandiblor",
+      "label": "Energy Gain per Mandiblor Controlled",
+      "type": "Continuous",
+      "effect": {
+        "kind": "ModifyEnergyPerCondition",
+        "amount": 5,
+        "conditions": [
+          { "type": "CreatureSubtype", "value": "Mandiblor", "controller": "you" }
+        ]
+      },
+      "text": "Odu-Bathax gains 5 Energy for each Mandiblor you control."
+    }
+  ],
+
+  "flavor_text": "Odu-Bathax is the defender of the North Gate at Mount Pillar."
+}
