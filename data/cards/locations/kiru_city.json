@@ -1,0 +1,26 @@
+{
+  "id": "LOC-DOP219-KIRU-CITY-v1",
+  "name": "Kiru City",
+  "type": "Location",
+  "rarity": "Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 219
+  },
+  "rules_text": "OverWorld Creatures have +10 Energy.",
+  "effects": [
+    {
+      "id": "eff-kiru-city-overworld-energy",
+      "label": "OverWorld Empowerment",
+      "type": "Continuous",
+      "target": { "type": "Creature", "controller": "any" },
+      "condition": {
+        "tribe": "OverWorlders"
+      },
+      "modifiers": {
+        "energy": 10
+      }
+    }
+  ],
+  "flavor_text": null
+}

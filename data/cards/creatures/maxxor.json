@@ -1,0 +1,52 @@
+{
+  "id": "CRE-OW-MAXXOR-DOP15-v1",
+  "name": "Maxxor",
+  "type": "Creature",
+  "tribe": "OverWorlders",
+  "subtypes": ["Hero"],
+  "unique": true,
+
+  "rarity": "Ultra Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 15
+  },
+  "artist": "Khary Randolph",
+
+  "base_stats": {
+    "courage": 100,
+    "power": 65,
+    "wisdom": 80,
+    "speed": 50,
+    "energy": 60
+  },
+  "stat_ranges": {
+    "courage": [90, 110],
+    "power": [55, 75],
+    "wisdom": [70, 90],
+    "speed": [40, 60],
+    "energy": [55, 65]
+  },
+
+  "mugic_counters": 2,
+  "elements": ["Earth", "Fire"],
+  "rules_text": "Mugic: Heal 10 damage to target Creature.",
+  "abilities": [
+    {
+      "id": "abl-maxxor-heal-10",
+      "label": "Battle Call",
+      "type": "Activated",
+      "cost": { "mugic": 1 },
+      "timing": "Any",
+      "target": { "type": "Creature", "controller": "any" },
+      "effect": {
+        "kind": "Heal",
+        "amount": 10,
+        "cap_at_max_energy": true
+      },
+      "text": "Spend 1 Mugic counter: Heal 10 damage to target Creature (cannot exceed its max Energy)."
+    }
+  ],
+
+  "flavor_text": "No OverWorlder has ever seen Maxxor's face in battle because he is always in the front line, leading the charge!"
+}

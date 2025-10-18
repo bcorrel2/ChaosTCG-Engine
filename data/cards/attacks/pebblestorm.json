@@ -1,0 +1,20 @@
+{
+  "id": "ATK-DOP112-PEBBLESTORM-v1",
+  "name": "Pebblestorm",
+  "type": "Attack",
+  "rarity": "Common",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 112
+  },
+  "build_points": 1,
+  "damage": {
+    "base": 0,
+    "fire": 0,
+    "air": 5,
+    "earth": 5,
+    "water": 0
+  },
+  "rules_text": "A storm of pebbles pummels foes with the power of earth and air.",
+  "flavor_text": null
+}

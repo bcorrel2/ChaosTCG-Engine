@@ -1,0 +1,43 @@
+{
+  "id": "ATK-DOP96-FLAME-ORB-v1",
+  "name": "Flame Orb",
+  "type": "Attack",
+  "rarity": "Super Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 96
+  },
+  "build_points": 2,
+  "damage": {
+    "base": 5,
+    "fire": 5,
+    "air": 0,
+    "earth": 0,
+    "water": 0
+  },
+  "rules_text": "Stat Check Power 75: Deal 10 damage.",
+  "effects": [
+    {
+      "id": "eff-flame-orb-statcheck",
+      "label": "Power Check Burn",
+      "type": "Triggered",
+      "trigger": {
+        "event": "AttackPlayed",
+        "source": "Self"
+      },
+      "stat_check": {
+        "discipline": "Power",
+        "threshold": 75,
+        "success_effect": {
+          "kind": "Damage",
+          "amount": 10
+        }
+      },
+      "target": {
+        "type": "OpponentCreature",
+        "controller": "opponent"
+      }
+    }
+  ],
+  "flavor_text": null
+}

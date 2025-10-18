@@ -1,0 +1,29 @@
+{
+  "id": "MUG-GEN-DECRESCENDO-DOP165-v1",
+  "name": "Decrescendo",
+  "type": "Mugic",
+  "mugic_type": "Generic",
+  "rarity": "Common",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 165
+  },
+  "mugic_cost": 1,
+  "rules_text": "Deal 5 damage to target Creature.",
+  "effects": [
+    {
+      "id": "eff-decrescendo-damage",
+      "label": "Harmonic Blast",
+      "type": "Instant",
+      "target": {
+        "type": "Creature",
+        "controller": "any"
+      },
+      "effect": {
+        "kind": "Damage",
+        "amount": 5
+      }
+    }
+  ],
+  "flavor_text": null
+}

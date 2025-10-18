@@ -1,0 +1,38 @@
+{
+  "id": "BG-DOP152-RING-NAARIN-v1",
+  "name": "Ring of Na'arin",
+  "type": "BattleGear",
+  "rarity": "Common",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 152
+  },
+  "rules_text": "Equipped Creature has +10 Power and +10 Wisdom. If equipped Creature has at least 50 Courage, it gains +10 Energy.",
+  "effects": [
+    {
+      "id": "eff-ring-naarin-buff",
+      "label": "Stat Enhancement",
+      "type": "Continuous",
+      "target": { "type": "EquippedCreature", "controller": "self" },
+      "modifiers": {
+        "power": 10,
+        "wisdom": 10
+      }
+    },
+    {
+      "id": "eff-ring-naarin-conditional",
+      "label": "Courage Bonus",
+      "type": "Conditional",
+      "condition": {
+        "stat": "courage",
+        "operator": ">=",
+        "value": 50
+      },
+      "target": { "type": "EquippedCreature", "controller": "self" },
+      "modifiers": {
+        "energy": 10
+      }
+    }
+  ],
+  "flavor_text": null
+}

@@ -1,0 +1,36 @@
+{
+  "id": "BG-DOP163-WHEPCRACK-v1",
+  "name": "Whepcrack",
+  "type": "BattleGear",
+  "rarity": "Super Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 163
+  },
+  "rules_text": "Equipped Creature has +15 Power. If the equipped Creature is an UnderWorlder, it gains Fire 5.",
+  "effects": [
+    {
+      "id": "eff-whepcrack-power-buff",
+      "label": "Power Enhancement",
+      "type": "Continuous",
+      "target": { "type": "EquippedCreature", "controller": "self" },
+      "modifiers": {
+        "power": 15
+      }
+    },
+    {
+      "id": "eff-whepcrack-element-bonus",
+      "label": "Tribal Fire Bonus",
+      "type": "Conditional",
+      "condition": {
+        "tribe": "UnderWorlders"
+      },
+      "target": { "type": "EquippedCreature", "controller": "self" },
+      "grant": {
+        "element": "Fire",
+        "bonus": 5
+      }
+    }
+  ],
+  "flavor_text": null
+}

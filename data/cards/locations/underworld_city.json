@@ -1,0 +1,38 @@
+{
+  "id": "LOC-DOP230-UNDERWORLD-CITY-v1",
+  "name": "UnderWorld City",
+  "type": "Location",
+  "rarity": "Super Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 230
+  },
+  "rules_text": "Attacks played by UnderWorld Creatures have \"Challenge Power 15: Deal 5 damage.\"",
+  "effects": [
+    {
+      "id": "eff-underworld-city-challenge",
+      "label": "UnderWorld Challenge Bonus",
+      "type": "Triggered",
+      "trigger": {
+        "event": "AttackPlayed",
+        "source": "Creature",
+        "condition": {
+          "tribe": "UnderWorlders"
+        }
+      },
+      "challenge": {
+        "discipline": "Power",
+        "threshold": 15,
+        "success_effect": {
+          "kind": "Damage",
+          "amount": 5
+        }
+      },
+      "target": {
+        "type": "OpponentCreature",
+        "controller": "opponent"
+      }
+    }
+  ],
+  "flavor_text": null
+}

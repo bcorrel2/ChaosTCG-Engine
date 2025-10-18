@@ -1,0 +1,37 @@
+{
+  "id": "MUG-GEN-FORTISSIMO-DOP167-v1",
+  "name": "Fortissimo",
+  "type": "Mugic",
+  "mugic_type": "Generic",
+  "rarity": "Super Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 167
+  },
+  "mugic_cost": 1,
+  "rules_text": "Target Creature gains +5 Courage, Power, Wisdom, Speed, and Energy until end of turn.",
+  "effects": [
+    {
+      "id": "eff-fortissimo-buff",
+      "label": "All-Stats Surge",
+      "type": "TemporaryBuff",
+      "target": { "type": "Creature", "controller": "any" },
+      "modifiers": {
+        "courage": 5,
+        "power": 5,
+        "wisdom": 5,
+        "speed": 5
+      },
+      "duration": "EndOfTurn"
+    },
+    {
+      "id": "eff-fortissimo-energy",
+      "label": "Energy Gain",
+      "type": "Heal",
+      "target": { "type": "Creature", "controller": "any" },
+      "amount": 5,
+      "cap_at_max_energy": true
+    }
+  ],
+  "flavor_text": "Large is good. Larger is better. But really, really big is sometimes best."
+}
