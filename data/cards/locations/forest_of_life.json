@@ -1,0 +1,37 @@
+{
+  "id": "LOC-FOREST-OF-LIFE-DOP213-v1",
+  "name": "Forest of Life",
+  "type": "Location",
+  "rarity": "Common",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 213
+  },
+  "artist": "Rudy D. Nebres & David Curiel",
+
+  "initiative": "Wisdom",
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-forest-life-power-heal",
+      "label": "Higher Power: Gain 5 Energy",
+      "type": "Triggered",
+      "trigger": { "event": "CombatStart" },
+      "compare": {
+        "discipline": "Power",
+        "winner": "EngagedCreature",
+        "loser": "OpposingEngagedCreature",
+        "ties": "None"
+      },
+      "target": { "type": "CompareWinner", "controller": "any" },
+      "effect": {
+        "kind": "Heal",
+        "amount": 5,
+        "cap_at_max_energy": true
+      }
+    }
+  ],
+
+  "flavor_text": "A place of perpetuity: nothing is born or perishes within."
+}

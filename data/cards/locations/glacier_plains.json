@@ -1,0 +1,33 @@
+{
+  "id": "LOC-GLACIER-PLAINS-DOP215-v1",
+  "name": "Glacier Plains",
+  "type": "Location",
+  "rarity": "Super Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 215
+  },
+  "artist": null,
+
+  "initiative": "Power",
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-glacier-plains-underworld-mugic-cost",
+      "label": "UnderWorld Mugic Costs +1 Mugic Counter",
+      "type": "Continuous",
+      "condition": {
+        "stat": "Tribe",
+        "operator": "==",
+        "value": "UnderWorlders"
+      },
+      "effect": {
+        "kind": "ModifyMugicCost",
+        "amount": 1
+      }
+    }
+  ],
+
+  "flavor_text": "This frozen, remote region is as harsh and forbidding as the UnderWorld's Lava Pond."
+}

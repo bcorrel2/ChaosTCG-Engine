@@ -1,0 +1,30 @@
+{
+  "id": "LOC-LAKE-KEN-I-PO-DOP220-v1",
+  "name": "Lake Ken-I-Po",
+  "type": "Location",
+  "rarity": "Ultra Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 220
+  },
+  "artist": null,
+
+  "initiative": "Power",
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-lake-kenipo-mugic-untargetable",
+      "label": "Each Mugic is Untargetable",
+      "type": "Continuous",
+      "target": { "type": "Mugic", "controller": "each" },
+      "effect": {
+        "kind": "GrantProperty",
+        "property": "Untargetable",
+        "value": true
+      }
+    }
+  ],
+
+  "flavor_text": "Above the placid waters, Najarin's castle towers. A dim light flickers...and a mystery is born."
+}

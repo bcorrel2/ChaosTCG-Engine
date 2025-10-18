@@ -1,0 +1,47 @@
+{
+  "id": "LOC-EVERRAIN-DOP210-v1",
+  "name": "Everrain",
+  "type": "Location",
+  "rarity": "Uncommon",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 210
+  },
+  "artist": "Keith Conroy & Emilio Lopez",
+
+  "initiative": null,
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-everrain-water-bonus",
+      "label": "Water Attacks Deal +5 Damage",
+      "type": "Continuous",
+      "condition": {
+        "stat": "Element",
+        "operator": "==",
+        "value": "Water"
+      },
+      "effect": {
+        "kind": "ModifyDamage",
+        "amount": 5
+      }
+    },
+    {
+      "id": "eff-everrain-earth-reduction",
+      "label": "Earth Attacks Deal -5 Damage",
+      "type": "Continuous",
+      "condition": {
+        "stat": "Element",
+        "operator": "==",
+        "value": "Earth"
+      },
+      "effect": {
+        "kind": "ModifyDamage",
+        "amount": -5
+      }
+    }
+  ],
+
+  "flavor_text": "Lake Ken-I-Po seeps through the UnderWorld ceiling in an unending reminder of the OverWorld's aqueous bounty."
+}

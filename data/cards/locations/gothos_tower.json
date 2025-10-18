@@ -1,0 +1,40 @@
+{
+  "id": "LOC-GOTHOS-TOWER-DOP217-v1",
+  "name": "Gothos Tower",
+  "type": "Location",
+  "rarity": "Rare",
+  "set": { "name": "Dawn of Perim", "number": 217 },
+  "artist": "Keith Conroy & David Curiel",
+
+  "initiative": "Speed",
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-courage-modify-minus10-except-lordvanbloot",
+      "label": "Creatures lose 10 Courage (except Lord Van Bloot)",
+      "type": "Continuous",
+      "condition": { "stat": "Name", "operator": "!=", "value": "Lord Van Bloot" },
+      "target": { "type": "Creature", "controller": "each" },
+      "effect": { "kind": "ModifyDiscipline", "discipline": "Courage", "amount": -10 }
+    },
+    {
+      "id": "eff-lordvanbloot-grant-invisibility15",
+      "label": "Lord Van Bloot gains Invisibility: Strike 15",
+      "type": "Continuous",
+      "condition": { "stat": "Name", "operator": "==", "value": "Lord Van Bloot" },
+      "target": { "type": "Creature", "controller": "each" },
+      "effect": {
+        "kind": "GrantAbility",
+        "ability": {
+          "label": "Invisibility: Strike 15",
+          "type": "Triggered",
+          "trigger": { "event": "CombatStart" },
+          "effect": { "kind": "PreemptiveDamage", "amount": 15 }
+        }
+      }
+    }
+  ],
+
+  "flavor_text": "The horrific home of the harrowing Lord Van Bloot."
+}

@@ -1,0 +1,49 @@
+{
+  "id": "LOC-STORM-TUNNEL-DOP228-v1",
+  "name": "Storm Tunnel",
+  "type": "Location",
+  "rarity": "Common",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 228
+  },
+  "artist": null,
+
+  "initiative": "Power",
+  "unique": false,
+
+  "rules_text": "Air attacks deal an additional 5 damage. Damage dealt by Water attacks is reduced by 5.",
+
+  "effects": [
+    {
+      "id": "eff-air-damage-plus5",
+      "label": "Air Attacks Deal +5 Damage",
+      "type": "Continuous",
+      "condition": {
+        "stat": "Element",
+        "operator": "==",
+        "value": "Air"
+      },
+      "effect": {
+        "kind": "ModifyDamage",
+        "amount": 5
+      }
+    },
+    {
+      "id": "eff-water-damage-minus5",
+      "label": "Water Attacks Deal -5 Damage",
+      "type": "Continuous",
+      "condition": {
+        "stat": "Element",
+        "operator": "==",
+        "value": "Water"
+      },
+      "effect": {
+        "kind": "ModifyDamage",
+        "amount": -5
+      }
+    }
+  ],
+
+  "flavor_text": "Even those who cannot fly do so here."
+}

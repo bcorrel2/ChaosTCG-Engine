@@ -1,0 +1,35 @@
+{
+  "id": "LOC-GIGANTEMPOPOLIS-DOP214-v1",
+  "name": "Gigantempopolis",
+  "type": "Location",
+  "rarity": "Uncommon",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 214
+  },
+  "artist": null,
+
+  "initiative": "Power",
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-gigantempopolis-overworld-mugic",
+      "label": "OverWorld Creatures Gain Mugic Counter",
+      "type": "Triggered",
+      "trigger": { "event": "CombatStart" },
+      "condition": {
+        "stat": "Tribe",
+        "operator": "==",
+        "value": "OverWorlders"
+      },
+      "target": { "type": "EngagedCreatures", "controller": "each" },
+      "effect": {
+        "kind": "AddMugicCounters",
+        "amount": 1
+      }
+    }
+  ],
+
+  "flavor_text": "The ancient beings who once dwelled here faded into oblivion - proving indisputably that size doesn't matter."
+}

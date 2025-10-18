@@ -7,6 +7,10 @@
     "name": "Dawn of Perim",
     "number": 219
   },
+
+  "initiative": null,
+  "unique": false,
+
   "rules_text": "OverWorld Creatures have +10 Energy.",
   "effects": [
     {

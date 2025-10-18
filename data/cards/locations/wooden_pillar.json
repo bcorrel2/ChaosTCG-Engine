@@ -1,0 +1,35 @@
+{
+  "id": "LOC-WOODEN-PILLAR-DOP232-v1",
+  "name": "Wooden Pillar",
+  "type": "Location",
+  "rarity": "Super Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 232
+  },
+  "artist": null,
+
+  "initiative": "Wisdom",
+  "unique": false,
+
+  "rules_text": "OverWorld Mugic Cards cost 1 additional Mugic counter to play.",
+
+  "effects": [
+    {
+      "id": "eff-overworld-mugic-plus1",
+      "label": "OverWorld Mugic Costs +1 Mugic Counter",
+      "type": "Continuous",
+      "condition": {
+        "stat": "Tribe",
+        "operator": "==",
+        "value": "OverWorlders"
+      },
+      "effect": {
+        "kind": "ModifyMugicCost",
+        "amount": 1
+      }
+    }
+  ],
+
+  "flavor_text": "The Runic Grove takes root here, and UnderWorlders believe it grows even further down than up."
+}

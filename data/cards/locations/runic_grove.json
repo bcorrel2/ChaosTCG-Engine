@@ -1,0 +1,31 @@
+{
+  "id": "LOC-RUNIC-GROVE-DOP226-v1",
+  "name": "Runic Grove",
+  "type": "Location",
+  "rarity": "Common",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 226
+  },
+  "artist": "Keith Conroy & Anthony Washington",
+
+  "initiative": "Courage",
+  "unique": false,
+
+  "rules_text": "Only Generic Mugic may be played.",
+
+  "effects": [
+    {
+      "id": "eff-mugic-allow-only-generic",
+      "label": "Restrict Mugic to Generic Only",
+      "type": "Continuous",
+      "effect": {
+        "kind": "RestrictPlay",
+        "card_type": "Mugic",
+        "allowed_types": ["Generic"]
+      }
+    }
+  ],
+
+  "flavor_text": "Secret symbols or a simple secret? Many have been tantalized by what remains indecipherable to this day."
+}

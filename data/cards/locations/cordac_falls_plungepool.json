@@ -1,0 +1,29 @@
+{
+  "id": "LOC-CORDAC-FALLS-PLUNGEPOOL-DOP206-v1",
+  "name": "Cordac Falls Plungepool",
+  "type": "Location",
+  "rarity": "Common",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 206
+  },
+  "artist": "Keith Conroy & Emilio Lopez",
+
+  "initiative": "UnderWorld",
+  "unique": false,
+
+  "rules_text": "At the beginning of combat, deal 5 damage to engaged Creatures.",
+
+  "effects": [
+    {
+      "id": "eff-cordac-falls-plungepool-dmg",
+      "label": "Combat Start Damage",
+      "type": "Triggered",
+      "trigger": { "event": "CombatStart" },
+      "target": { "type": "EngagedCreatures", "controller": "each" },
+      "effect": { "kind": "Damage", "amount": 5 }
+    }
+  ],
+
+  "flavor_text": "…and strike the lake miles below, exploding outwards into the fray."
+}

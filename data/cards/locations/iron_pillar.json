@@ -1,0 +1,28 @@
+{
+  "id": "LOC-IRON-PILLAR-DOP218-v1",
+  "name": "Iron Pillar",
+  "type": "Location",
+  "rarity": "Super Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 218
+  },
+  "artist": null,
+
+  "initiative": "Courage",
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-iron-pillar-suppress-battlegear",
+      "label": "Battlegear Have No Abilities",
+      "type": "Continuous",
+      "effect": {
+        "kind": "DisableAbilities",
+        "source": "BattleGear"
+      }
+    }
+  ],
+
+  "flavor_text": "The frequent quakes that rock the UnderWorld are blamed on the instability of this once-mighty prop."
+}

@@ -1,0 +1,33 @@
+{
+  "id": "LOC-CORDAC-FALLS-DOP205-v1",
+  "name": "Cordac Falls",
+  "type": "Location",
+  "rarity": "Common",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 205
+  },
+  "artist": "Keith Conroy & Emilio Lopez",
+
+  "initiative": "OverWorld",
+  "unique": false,
+
+  "rules_text": "At the beginning of combat, engaged Creatures gain 5 Energy.",
+
+  "effects": [
+    {
+      "id": "eff-cordac-falls-heal",
+      "label": "Combat Start Heal",
+      "type": "Triggered",
+      "trigger": { "event": "CombatStart" },
+      "target": { "type": "EngagedCreatures", "controller": "each" },
+      "effect": {
+        "kind": "Heal",
+        "amount": 5,
+        "cap_at_max_energy": true
+      }
+    }
+  ],
+
+  "flavor_text": "Cordac's teardrops plunge into the abyss with nary a splash or spray…"
+}

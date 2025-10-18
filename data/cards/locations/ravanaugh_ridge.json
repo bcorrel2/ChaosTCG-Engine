@@ -1,0 +1,41 @@
+{
+  "id": "LOC-RAVANAUGH-RIDGE-DOP224-v1",
+  "name": "Ravanaugh Ridge",
+  "type": "Location",
+  "rarity": "Common",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 224
+  },
+  "artist": null,
+
+  "initiative": "Power",
+  "unique": false,
+
+  "rules_text": "At the beginning of combat, if a player controls an engaged Creature with Air, that player can look at the top three cards of their Attack Deck, put one of them on top of that deck and the others on the bottom in any order.",
+
+  "effects": [
+    {
+      "id": "eff-air-topdeck-scry3",
+      "label": "Air Creatures’ Controller Scry 3 Attack Deck",
+      "type": "Triggered",
+      "trigger": { "event": "CombatStart" },
+      "condition": {
+        "stat": "Element",
+        "operator": "==",
+        "value": "Air"
+      },
+      "target": { "type": "Player", "controller": "owner_of_engaged_creature" },
+      "effect": {
+        "kind": "DeckManipulation",
+        "deck": "Attack",
+        "action": "Scry",
+        "amount": 3,
+        "choose": 1,
+        "remainder_to": "Bottom"
+      }
+    }
+  ],
+
+  "flavor_text": null
+}

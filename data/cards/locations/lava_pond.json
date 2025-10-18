@@ -1,0 +1,62 @@
+{
+  "id": "LOC-LAVA-POND-DOP221-v1",
+  "name": "Lava Pond",
+  "type": "Location",
+  "rarity": "Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 221
+  },
+  "artist": null,
+
+  "initiative": "Speed",
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-fire-damage-plus5",
+      "label": "Fire Attacks Deal +5 Damage",
+      "type": "Continuous",
+      "condition": {
+        "stat": "Element",
+        "operator": "==",
+        "value": "Fire"
+      },
+      "effect": {
+        "kind": "ModifyDamage",
+        "amount": 5
+      }
+    },
+    {
+      "id": "eff-air-damage-minus5",
+      "label": "Air Attacks Deal -5 Damage",
+      "type": "Continuous",
+      "condition": {
+        "stat": "Element",
+        "operator": "==",
+        "value": "Air"
+      },
+      "effect": {
+        "kind": "ModifyDamage",
+        "amount": -5
+      }
+    },
+    {
+      "id": "eff-magmon-grant-fire5",
+      "label": "Creatures Named Magmon Gain Fire 5",
+      "type": "Continuous",
+      "condition": {
+        "stat": "Name",
+        "operator": "==",
+        "value": "Magmon"
+      },
+      "target": { "type": "Creature", "controller": "each" },
+      "grant": {
+        "element": "Fire",
+        "bonus": 5
+      }
+    }
+  ],
+
+  "flavor_text": null
+}

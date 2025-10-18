@@ -1,0 +1,34 @@
+{
+  "id": "LOC-CASTLE-BODHRAN-DOP203-v1",
+  "name": "Castle Bodhran",
+  "type": "Location",
+  "rarity": "Super Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 203
+  },
+  "artist": "Keith Conroy & Jimmy Tran",
+
+  "initiative": "Power",
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-castle-bodhran-return-mugic",
+      "label": "Return Mugic from Discard",
+      "type": "Triggered",
+      "trigger": {
+        "event": "CombatStart"
+      },
+      "effect": {
+        "kind": "ReturnCard",
+        "target_zone": "Discard",
+        "target_type": "Mugic",
+        "destination": "Hand",
+        "controller": "each"
+      }
+    }
+  ],
+
+  "flavor_text": "This strange stronghold is built in a style that might best be called 'bizzarechitecture.'"
+}

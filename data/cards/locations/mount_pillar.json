@@ -1,0 +1,32 @@
+{
+  "id": "LOC-MOUNT-PILLAR-DOP223-v1",
+  "name": "Mount Pillar",
+  "type": "Location",
+  "rarity": "Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 223
+  },
+  "artist": null,
+
+  "initiative": "Wisdom",
+  "unique": false,
+
+  "rules_text": "When this becomes the active Location, activate Hive until the end of the turn.",
+
+  "effects": [
+    {
+      "id": "eff-danian-activate-hive",
+      "label": "Activate Hive until end of turn",
+      "type": "Triggered",
+      "trigger": { "event": "LocationActivated" },
+      "effect": {
+        "kind": "ActivateKeyword",
+        "keyword": "Hive",
+        "duration": "EndOfTurn"
+      }
+    }
+  ],
+
+  "flavor_text": "The Danian homeland provides vital structural support to the UnderWorld ceiling, explaining why Chaor has resisted its demolition."
+}

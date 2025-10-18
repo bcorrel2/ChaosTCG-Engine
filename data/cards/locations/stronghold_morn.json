@@ -1,0 +1,33 @@
+{
+  "id": "LOC-STRONGHOLD-MORN-DOP229-v1",
+  "name": "Stronghold Morn",
+  "type": "Location",
+  "rarity": "Super Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 229
+  },
+  "artist": "Keith Conroy & David Curiel",
+
+  "initiative": "Speed",
+  "unique": true,
+
+  "rules_text": "At the beginning of combat, both engaged Creatures gain Elemental Types Fire, Water, Air, and Earth.",
+
+  "effects": [
+    {
+      "id": "eff-engaged-grant-all-elements",
+      "label": "Engaged Creatures Gain All Elements",
+      "type": "Triggered",
+      "trigger": { "event": "CombatStart" },
+      "target": { "type": "EngagedCreatures", "controller": "each" },
+      "effect": {
+        "kind": "GrantElements",
+        "elements": ["Fire", "Water", "Air", "Earth"],
+        "duration": "EndOfCombat"
+      }
+    }
+  ],
+
+  "flavor_text": null
+}

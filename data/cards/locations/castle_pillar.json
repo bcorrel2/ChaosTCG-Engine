@@ -1,0 +1,40 @@
+{
+  "id": "LOC-CASTLE-PILLAR-DOP204-v1",
+  "name": "Castle Pillar",
+  "type": "Location",
+  "rarity": "Ultra Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 204
+  },
+  "artist": "Keith Conroy & Emilio Lopez",
+
+  "initiative": null,
+  "unique": true,
+
+  "rules_text": "At the beginning of combat, if an engaged Creature has higher Wisdom than the opposing engaged Creature, put a Mugic counter on it.",
+
+  "effects": [
+    {
+      "id": "eff-castle-pillar-wisdom-award",
+      "label": "Wisdom Edge",
+      "type": "Triggered",
+      "trigger": { "event": "CombatStart" },
+
+      "compare": {
+        "discipline": "Wisdom",
+        "winner": "EngagedCreature",
+        "loser": "OpposingEngagedCreature",
+        "ties": "None"
+      },
+
+      "target": { "type": "CompareWinner", "controller": "any" },
+      "effect": {
+        "kind": "AddMugicCounters",
+        "amount": 1
+      }
+    }
+  ],
+
+  "flavor_text": null
+}

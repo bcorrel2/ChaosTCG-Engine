@@ -1,0 +1,31 @@
+{
+  "id": "LOC-EYE-OF-THE-MAELSTROM-DOP211-v1",
+  "name": "Eye of the Maelstrom",
+  "type": "Location",
+  "rarity": "Uncommon",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 211
+  },
+  "artist": "Keith Conroy & David Curiel",
+
+  "initiative": "Power",
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-eye-maelstrom-discard-mugic",
+      "label": "Discard Mugic on Activation",
+      "type": "Triggered",
+      "trigger": { "event": "LocationActivated" },
+      "target": { "type": "Player", "controller": "each" },
+      "effect": {
+        "kind": "DiscardCard",
+        "target_type": "Mugic",
+        "amount": 1
+      }
+    }
+  ],
+
+  "flavor_text": "No wind, no sound - just madness."
+}

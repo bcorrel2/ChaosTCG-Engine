@@ -1,0 +1,38 @@
+{
+  "id": "LOC-RIVERLANDS-DOP225-v1",
+  "name": "Riverlands",
+  "type": "Location",
+  "rarity": "Uncommon",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 225
+  },
+  "artist": "Keith Conroy & David Curiel",
+
+  "initiative": "Wisdom",
+  "unique": false,
+
+  "rules_text": "When a Creature deals Water damage, heal 5 damage to it.",
+
+  "effects": [
+    {
+      "id": "eff-water-onhit-heal5",
+      "label": "Heal 5 to Source on Water Damage",
+      "type": "Triggered",
+      "trigger": {
+        "event": "DamageDealt",
+        "by": "Creature",
+        "element": "Water",
+        "amount_gt": 0
+      },
+      "target": { "type": "SourceCreature", "controller": "any" },
+      "effect": {
+        "kind": "Heal",
+        "amount": 5,
+        "cap_at_max_energy": true
+      }
+    }
+  ],
+
+  "flavor_text": "No one has yet to reach the source of the rushing waters. Could the Cothica be where it all begins?"
+}

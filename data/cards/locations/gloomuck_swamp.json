@@ -1,0 +1,47 @@
+{
+  "id": "LOC-GLOOMUCK-SWAMP-DOP216-v1",
+  "name": "Gloomuck Swamp",
+  "type": "Location",
+  "rarity": "Common",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 216
+  },
+  "artist": "Rudy D. Nebres & David Curiel",
+
+  "initiative": "Courage",
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-gloomuck-swamp-earth-bonus",
+      "label": "Earth Attacks Deal +5 Damage",
+      "type": "Continuous",
+      "condition": {
+        "stat": "Element",
+        "operator": "==",
+        "value": "Earth"
+      },
+      "effect": {
+        "kind": "ModifyDamage",
+        "amount": 5
+      }
+    },
+    {
+      "id": "eff-gloomuck-swamp-fire-reduction",
+      "label": "Fire Attacks Deal -5 Damage",
+      "type": "Continuous",
+      "condition": {
+        "stat": "Element",
+        "operator": "==",
+        "value": "Fire"
+      },
+      "effect": {
+        "kind": "ModifyDamage",
+        "amount": -5
+      }
+    }
+  ],
+
+  "flavor_text": "For very different reasons both Crawsectus and Antidaeon choose to call this murky mass home."
+}

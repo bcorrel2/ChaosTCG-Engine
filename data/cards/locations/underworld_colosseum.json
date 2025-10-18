@@ -1,0 +1,39 @@
+{
+  "id": "LOC-UNDERWORLD-COLOSSEUM-DOP231-v1",
+  "name": "UnderWorld Colosseum",
+  "type": "Location",
+  "rarity": "Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 231
+  },
+  "artist": "Keith Conroy & Emilio Lopez",
+
+  "initiative": "Speed",
+  "unique": false,
+
+  "rules_text": "Creatures with Elemental Type Fire deal an additional 10 damage on their first attack.",
+
+  "effects": [
+    {
+      "id": "eff-fire-firstattack-plus10",
+      "label": "Fire: First Attack Deals +10",
+      "type": "Triggered",
+      "trigger": {
+        "event": "AttackPlayed",
+        "first_attack_this_combat": true
+      },
+      "condition": {
+        "stat": "Element",
+        "operator": "==",
+        "value": "Fire"
+      },
+      "effect": {
+        "kind": "ModifyDamage",
+        "amount": 10
+      }
+    }
+  ],
+
+  "flavor_text": "UnderWorlders have a single way of settling arguments here: the one left standing is always right."
+}

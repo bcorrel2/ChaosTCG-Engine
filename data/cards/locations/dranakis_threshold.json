@@ -1,0 +1,28 @@
+{
+  "id": "LOC-DRANAKIS-THRESHOLD-DOP209-v1",
+  "name": "Dranakis Threshold",
+  "type": "Location",
+  "rarity": "Super Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 209
+  },
+  "artist": "Keith Conroy & David Curiel",
+
+  "initiative": "Courage",
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-dranakis-threshold-nullify-abilities",
+      "label": "Disable Mugic and Activated Abilities",
+      "type": "Continuous",
+      "effect": {
+        "kind": "DisableActions",
+        "actions": ["Mugic", "ActivatedAbilities"]
+      }
+    }
+  ],
+
+  "flavor_text": "The few who have survived utter nary a word of what lies beyond."
+}

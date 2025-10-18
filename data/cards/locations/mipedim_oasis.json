@@ -1,0 +1,39 @@
+{
+  "id": "LOC-MIPEDIM-OASIS-DOP222-v1",
+  "name": "Mipedim Oasis",
+  "type": "Location",
+  "rarity": "Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 222
+  },
+  "artist": null,
+
+  "initiative": "Courage",
+  "unique": false,
+
+  "rules_text": "Mipedian Creatures deal an additional 10 damage with their first attack each combat.",
+
+  "effects": [
+    {
+      "id": "eff-mipedians-firstattack-plus10",
+      "label": "Mipedians: First Attack Deals +10",
+      "type": "Triggered",
+      "trigger": {
+        "event": "AttackPlayed",
+        "first_attack_this_combat": true
+      },
+      "condition": {
+        "stat": "Tribe",
+        "operator": "==",
+        "value": "Mipedians"
+      },
+      "effect": {
+        "kind": "ModifyDamage",
+        "amount": 10
+      }
+    }
+  ],
+
+  "flavor_text": "For those struggling to survive the Mipedian Desert, this is a welcome sight. But it is what they can't see that will prove most dangerous."
+}

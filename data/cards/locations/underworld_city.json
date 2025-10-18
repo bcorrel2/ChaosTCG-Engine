@@ -7,6 +7,10 @@
     "name": "Dawn of Perim",
     "number": 230
   },
+
+  "initiative": null,
+  "unique": false,
+
   "rules_text": "Attacks played by UnderWorld Creatures have \"Challenge Power 15: Deal 5 damage.\"",
   "effects": [
     {

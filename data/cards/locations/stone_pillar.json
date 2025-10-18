@@ -1,0 +1,46 @@
+{
+  "id": "LOC-STONE-PILLAR-DOP227-v1",
+  "name": "Stone Pillar",
+  "type": "Location",
+  "rarity": "Super Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 227
+  },
+  "artist": null,
+
+  "initiative": "Wisdom",
+  "unique": false,
+
+  "rules_text": "The first Mugic card cast by any engaged UnderWorld Creature costs 1 less Mugic counter.",
+
+  "effects": [
+    {
+      "id": "eff-underworld-firstmugic-minus1",
+      "label": "UnderWorld (engaged): first Mugic this combat costs -1",
+      "type": "Triggered",
+      "trigger": {
+        "event": "BeforeMugicCast",
+        "first_this_combat": true
+      },
+      "condition": {
+        "stat": "Tribe",
+        "operator": "==",
+        "value": "UnderWorlders"
+      },
+      "additional_condition": {
+        "stat": "Engaged",
+        "operator": "==",
+        "value": true
+      },
+      "target": { "type": "CastingCreature", "controller": "any" },
+      "effect": {
+        "kind": "ModifyMugicCost",
+        "amount": -1,
+        "minimum_cost": 0
+      }
+    }
+  ],
+
+  "flavor_text": "Without the Pillars there would be no Over and Under, but simply one World."
+}

@@ -1,0 +1,40 @@
+{
+  "id": "LOC-CRYSTAL-CAVE-DOP207-v1",
+  "name": "Crystal Cave",
+  "type": "Location",
+  "rarity": "Uncommon",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 207
+  },
+  "artist": "Damien Lobonte & Kevin Chai",
+
+  "initiative": "Speed",
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-crystal-cave-first-attack-zero",
+      "label": "Lower Speed: First Attack Deals 0",
+      "type": "Triggered",
+      "trigger": {
+        "event": "AttackPlayed",
+        "source": "Creature",
+        "first_attack_this_combat": true
+      },
+      "compare": {
+        "discipline": "Speed",
+        "winner": "EngagedCreature",
+        "loser": "OpposingEngagedCreature",
+        "ties": "None"
+      },
+      "target": { "type": "CompareLoser", "controller": "any" },
+      "effect": {
+        "kind": "SetAttackDamage",
+        "amount": 0
+      }
+    }
+  ],
+
+  "flavor_text": "The ancient Mugicians mined the hardest substance in all of Parim to protect their mystical melodies."
+}

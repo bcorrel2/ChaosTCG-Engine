@@ -1,0 +1,36 @@
+{
+  "id": "LOC-DOORS-OF-THE-DEEPMINES-DOP208-v1",
+  "name": "Doors of the Deepmines",
+  "type": "Location",
+  "rarity": "Uncommon",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 208
+  },
+  "artist": "Keith Conroy & Emilio Lopez",
+
+  "initiative": null,
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-doors-deepmines-water-energy",
+      "label": "Water Creatures Gain Energy",
+      "type": "Triggered",
+      "trigger": { "event": "CombatStart" },
+      "condition": {
+        "stat": "Element",
+        "operator": "==",
+        "value": "Water"
+      },
+      "target": { "type": "Creature", "controller": "each" },
+      "effect": {
+        "kind": "Heal",
+        "amount": 10,
+        "cap_at_max_energy": true
+      }
+    }
+  ],
+
+  "flavor_text": "In a rare sign of solidarity all four tribes guard the massive doors, hoping they never open again."
+}

@@ -1,0 +1,11 @@
+== Elemental Modifiers ==
+eff-fire-damage-plus5: "Fire Attacks Deal +5 Damage"
+
+eff-air-damage-minus5: "Air Attacks Deal -5 Damage"
+
+== Discipline Modifiers ==
+
+== Creature-specific Modifiers ==
+eff-magmon-grant-fire5: "Creatures Named Magmon Gain Fire 5"
+eff-lordvanbloot-grant-invisibility15: "Lord Van Bloot Gains Invisibility: Strike 15"
+eff-courage-modify-minus10-except-lordvanbloot: "Creatures lose 10 Courage (except Lord Van Bloot)"

@@ -1,0 +1,36 @@
+{
+  "id": "LOC-FEAR-VALLEY-DOP212-v1",
+  "name": "Fear Valley",
+  "type": "Location",
+  "rarity": "Uncommon",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 212
+  },
+  "artist": "Andrew Bradshaw & Anthony Washington",
+
+  "initiative": "Wisdom",
+  "unique": false,
+
+  "effects": [
+    {
+      "id": "eff-fear-valley-courage-loss",
+      "label": "Lower Courage: Lose 10 Energy",
+      "type": "Triggered",
+      "trigger": { "event": "CombatStart" },
+      "compare": {
+        "discipline": "Courage",
+        "winner": "EngagedCreature",
+        "loser": "OpposingEngagedCreature",
+        "ties": "None"
+      },
+      "target": { "type": "CompareLoser", "controller": "any" },
+      "effect": {
+        "kind": "Damage",
+        "amount": 10
+      }
+    }
+  ],
+
+  "flavor_text": "One night here means a lifetime of nightmares."
+}
