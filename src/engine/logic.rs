@@ -1,5 +1,5 @@
 use crate::engine::cards::*;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 /* ---------- Runtime structs ---------- */
 
@@ -8,6 +8,7 @@ pub struct CreatureInstance {
     pub card: CreatureCard,
     pub current_energy: i32,
     pub elements: HashSet<Element>, // start from card.elements, modified by gear/location if needed
+    pub elemental_bonus: HashMap<Element, i32>,
     pub power: i32,
     pub wisdom: i32,
     pub courage: i32,
@@ -23,6 +24,7 @@ impl From<&CreatureCard> for CreatureInstance {
             card: c.clone(),
             current_energy: c.base_stats.energy as i32,
             elements: elems,
+            elemental_bonus: HashMap::new(),
             power: c.base_stats.power as i32,
             wisdom: c.base_stats.wisdom as i32,
             courage: c.base_stats.courage as i32,
@@ -66,6 +68,17 @@ fn apply_stat_mods(cre: &mut CreatureInstance, mods: &StatModifiers) {
     if let Some(v) = mods.energy  { cre.current_energy += v as i32; } // treat +Energy as max & current for now
 }
 
+fn stat_value(cre: &CreatureInstance, disc: &str) -> i32 {
+    match disc {
+        "Power" => cre.power,
+        "Courage" => cre.courage,
+        "Wisdom" => cre.wisdom,
+        "Speed" => cre.speed,
+        "Energy" => cre.current_energy,
+        _ => 0,
+    }
+}
+
 /* ---------- Public API for the test ---------- */
 
 pub fn equip_battlegear(cre: &mut CreatureInstance, gear: &BattleGearCard) {
@@ -76,8 +89,10 @@ pub fn equip_battlegear(cre: &mut CreatureInstance, gear: &BattleGearCard) {
                     apply_stat_mods(cre, mods);
                 }
                 if let Some(grant) = &node.grant {
-                    cre.elements.insert(grant.element.clone());
-                    // (If you later use element “bonus” like Fire 5 offensively, store it here.)
+                    cre.elements.insert(grant.element);
+                    if grant.bonus != 0 {
+                        *cre.elemental_bonus.entry(grant.element).or_insert(0) += i32::from(grant.bonus);
+                    }
                 }
             }
             "Conditional" => {
@@ -87,7 +102,10 @@ pub fn equip_battlegear(cre: &mut CreatureInstance, gear: &BattleGearCard) {
                             apply_stat_mods(cre, mods);
                         }
                         if let Some(grant) = &node.grant {
-                            cre.elements.insert(grant.element.clone());
+                            cre.elements.insert(grant.element);
+                            if grant.bonus != 0 {
+                                *cre.elemental_bonus.entry(grant.element).or_insert(0) += i32::from(grant.bonus);
+                            }
                         }
                     }
                 }
@@ -120,16 +138,70 @@ pub fn apply_location(creatures: &mut [&mut CreatureInstance], loc: &LocationCar
     }
 }
 
+pub fn add_location_attack_bonus(attacker: &CreatureInstance, _defender: &CreatureInstance, loc: &LocationCard) -> i32 {
+    let mut extra = 0;
+    for node in &loc.effects {
+        if node.node_type == "Triggered" {
+            if let Some(trg) = &node.trigger {
+                if trg.event == "AttackPlayed" {
+                    // Check optional tribe condition
+                    let cond_ok = if let Some(cond) = &trg.condition {
+                        cond_passes(attacker, cond)
+                    } else { true };
+
+                    if cond_ok {
+                        if let Some(ch) = &node.challenge {
+                            let val = stat_value(attacker, &ch.discipline);
+                            if val >= ch.threshold as i32 {
+                                if ch.success_effect.kind == EffectKind::Damage {
+                                    if let Some(a) = ch.success_effect.amount {
+                                        extra += i32::from(a); // ← cast i16 → i32
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    extra as i32
+}
+
 pub fn compute_attack_damage(attacker: &CreatureInstance, _defender: &CreatureInstance, atk: &AttackCard) -> i32 {
     let mut dmg = atk.damage.base as i32;
-    // elemental adds if attacker has the element
-    if attacker.elements.contains(&Element::Fire)  { dmg += atk.damage.fire  as i32; }
-    if attacker.elements.contains(&Element::Air)   { dmg += atk.damage.air   as i32; }
-    if attacker.elements.contains(&Element::Earth) { dmg += atk.damage.earth as i32; }
-    if attacker.elements.contains(&Element::Water) { dmg += atk.damage.water as i32; }
 
-    // If the attack has triggered/stat checks, you can evaluate here later.
-    // For today, Pebblestorm has none, so we’re done.
+    if attacker.elements.contains(&Element::Fire) {
+        let bonus = *attacker.elemental_bonus.get(&Element::Fire).unwrap_or(&0);
+        dmg += atk.damage.fire as i32 + bonus;
+    }
+    if attacker.elements.contains(&Element::Air) {
+        let bonus = *attacker.elemental_bonus.get(&Element::Air).unwrap_or(&0);
+        dmg += atk.damage.air as i32 + bonus;
+    }
+    if attacker.elements.contains(&Element::Earth) {
+        let bonus = *attacker.elemental_bonus.get(&Element::Earth).unwrap_or(&0);
+        dmg += atk.damage.earth as i32 + bonus;
+    }
+    if attacker.elements.contains(&Element::Water) {
+        let bonus = *attacker.elemental_bonus.get(&Element::Water).unwrap_or(&0);
+        dmg += atk.damage.water as i32 + bonus;
+    }
+
+    // Stat checks (i.e. Flame Orb "Power 75: +10")
+    for node in &atk.effects {
+        if let Some(sc) = &node.stat_check {
+            let val = stat_value(attacker, &sc.discipline);
+            if val >= sc.threshold as i32 {
+                if sc.success_effect.kind == EffectKind::Damage {
+                    if let Some(extra) = sc.success_effect.amount {
+                        dmg += i32::from(extra);
+                    }
+                }
+            }
+        }
+    }
+
     dmg.max(0)
 }
 

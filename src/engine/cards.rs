@@ -261,7 +261,7 @@ pub struct Effect {
     pub scope: Option<String>,        // e.g., "TargetEffect" for counters
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "PascalCase")]
 pub enum EffectKind {
     Heal,
@@ -279,6 +279,15 @@ pub enum EffectKind {
 pub struct ElementGrant {
     pub element: Element,
     pub bonus: i16,
+}
+
+/* --------------------------  Stat Checks  ---------------------------------*/
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StatCheck {
+    pub discipline: String,   // "Power", "Wisdom", etc.
+    pub threshold: u16,
+    pub success_effect: Effect,
 }
 
 /* ---------------------------- EffectNode (rich) -------------------------- */
@@ -318,6 +327,10 @@ pub struct EffectNode {
     // For Location's "Challenge" or Attack's "Stat Check":
     #[serde(default)]
     pub challenge: Option<Challenge>,
+
+    // For Effects That Require Comparing a Stat to a Sccuess Threshold
+    #[serde(default)]
+    pub stat_check: Option<StatCheck>,
 
     // For Attack's or Mugic's immediate payload (Decrescendo pattern)
     #[serde(default)]

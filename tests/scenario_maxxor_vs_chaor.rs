@@ -67,3 +67,59 @@ fn maxxor_ring_pebblestorm_vs_chaor_whepcrack_at_kiru_city() {
     deal_damage(&mut chao, dmg);
     assert_eq!(chao.current_energy, pre_energy - 5);
 }
+
+#[test]
+fn chaor_whepcrack_flame_orb_vs_maxxor_ring_at_underworld_city() {
+    // --- Paths ---
+    let creatures_dir  = root().join("data/cards/creatures");
+    let whepcrack_path = root().join("data/cards/battlegear/whepcrack.json");
+    let ring_path      = root().join("data/cards/battlegear/ring_of_naarin.json");
+    let flame_orb_path = root().join("data/cards/attacks/flame_orb.json");
+    let uw_city_path   = root().join("data/cards/locations/underworld_city.json");
+
+    // --- Load cards ---
+    let chaor = load_creatures(&creatures_dir)
+        .into_iter()
+        .find(|c| c.name == "Chaor")
+        .expect("Chaor not found");
+    let maxxor = load_creatures(&creatures_dir)
+        .into_iter()
+        .find(|c| c.name == "Maxxor")
+        .expect("Maxxor not found");
+
+    let whepcrack:   BattleGearCard = load_single(whepcrack_path);
+    let ring_naarin: BattleGearCard = load_single(ring_path);
+    let flame_orb:   AttackCard     = load_single(flame_orb_path);
+    let uw_city:     LocationCard   = load_single(uw_city_path);
+
+    // --- Runtime instances ---
+    let mut att = CreatureInstance::from(&chaor);   // attacker: Chaor
+    let mut def = CreatureInstance::from(&maxxor);  // defender: Maxxor
+
+    // --- Equip ---
+    equip_battlegear(&mut att, &whepcrack);   // +15 Power, Fire 5 (elemental bonus)
+    equip_battlegear(&mut def, &ring_naarin); // +10 Power, +10 Wisdom, +10 Energy (if Courage ≥ 50)
+
+    // --- Apply location continuous effects (UW City has none; Kiru City was the +Energy one) ---
+    let mut party = [&mut att, &mut def];
+    apply_location(&mut party, &uw_city);
+
+    // Defender’s starting energy: Maxxor 60 base +10 Ring = 70 (UW City does not buff)
+    assert_eq!(def.current_energy, 70);
+
+    // --- Compute damage ---
+    // Flame Orb: base 5 + fire 5; Chaor gains Fire 5 from Whepcrack → +5 more fire
+    //            Attack stat check: Power ≥ 75 → +10 (Chaor power 90+15=105)
+    //            UnderWorld City challenge: Power ≥ 15 → +5 (Chaor is UnderWorlders)
+    let base = compute_attack_damage(&att, &def, &flame_orb);
+    let loc_bonus = add_location_attack_bonus(&att, &def, &uw_city);
+    let total = base + loc_bonus;
+
+    assert_eq!(base, 25, "Expected 5 (base) + 5 (fire) + 5 (Fire 5) + 10 (stat check)");
+    assert_eq!(loc_bonus, 5, "UW City challenge should add +5");
+    assert_eq!(total, 30);
+
+    // --- Apply damage ---
+    deal_damage(&mut def, total);
+    assert_eq!(def.current_energy, 70 - 30); // => 40
+}
