@@ -12,6 +12,8 @@
   "initiative": "Wisdom",
   "unique": false,
 
+  "rules_text": "At the beginning of combat, the engaged Creature with the highest Power gains 5 energy (If both Creatures have the same Power, there is no effect).",
+
   "effects": [
     {
       "id": "eff-forest-life-power-heal",

@@ -14,7 +14,7 @@ pub struct CreatureInstance {
     pub wisdom: i32,
     pub courage: i32,
     pub speed: i32,
-    pub mugic: i32,
+    pub mugic_counters: i32,
     pub equipped_gear: Option<BattleGearCard>,
     pub attacks_this_combat: u8,
 }
@@ -32,7 +32,7 @@ impl From<&CreatureCard> for CreatureInstance {
             wisdom: c.base_stats.wisdom as i32,
             courage: c.base_stats.courage as i32,
             speed: c.base_stats.speed as i32,
-            mugic: c.mugic_counters as i32,
+            mugic_counters: c.mugic_counters as i32,
             equipped_gear: None,
             attacks_this_combat: 0
         }
@@ -164,14 +164,10 @@ fn stat_value(cre: &CreatureInstance, disc: &str) -> i32 {
 
 /* ---------- Public API for the test ---------- */
 
-// src/engine/logic.rs
-
 pub fn equip_battlegear(cre: &mut CreatureInstance, gear: &BattleGearCard) {
     cre.equipped_gear = Some(gear.clone());
     apply_battlegear_effects(cre, gear);
 }
-
-// src/engine/logic.rs
 
 fn apply_battlegear_effects(cre: &mut CreatureInstance, gear: &BattleGearCard) {
     for node in &gear.effects {
@@ -236,8 +232,48 @@ fn apply_effect_to_creature(cre: &mut CreatureInstance, eff: &Effect) -> bool {
                 _ => false, // unknown discipline; ignore
             }
         }
+        EffectKind::AddMugicCounters => {
+            let delta: i32 = eff.amount.unwrap_or(0).into(); // if your field is 'amount'
+            cre.mugic_counters += delta;
+            if cre.mugic_counters < 0 { cre.mugic_counters = 0; }
+            true
+        }
         _ => false, // not handled here (fine for now)
     }
+}
+
+/// Sacrifice the currently equipped Battlegear:
+/// - Fires any Triggered effects with trigger.event == "Sacrifice"
+/// - Applies their effect to the equipped creature
+/// - Permanently removes the gear
+/// Returns true if a gear was sacrificed.
+pub fn sacrifice_equipped_gear(cre: &mut CreatureInstance) -> bool {
+    // Take the gear off the creature (this consumes/unequips it)
+    let Some(gear) = cre.equipped_gear.take() else { return false; };
+
+    for node in &gear.effects {
+        // Only handle triggered nodes on sacrifice
+        if !node.node_type.eq_ignore_ascii_case("Triggered") { continue; }
+        let Some(trg) = &node.trigger else { continue; };
+        if !trg.event.eq_ignore_ascii_case("Sacrifice") { continue; }
+
+        // If the node has a condition, respect it
+        if let Some(cond) = &node.condition {
+            if !cond_passes(cre, cond) { continue; }
+        }
+
+        // Apply the effect to the equipped creature (self)
+        if let Some(eff) = &node.effect {
+            let _ = apply_effect_to_creature(cre, eff);
+        }
+
+        // If your nodes can also grant elements on sacrifice, support it:
+        if let Some(gr) = &node.grant {
+            apply_element_grant(cre, gr); // ElementGrant helper; no-op for Lyre
+        }
+    }
+
+    true
 }
 
 pub fn apply_location(creatures: &mut [&mut CreatureInstance], loc: &LocationCard) {

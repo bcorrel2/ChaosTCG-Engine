@@ -1,0 +1,47 @@
+{
+  "id": "CRE-OW-HEPTADD-DOP11-v1",
+  "name": "Heptadd",
+  "type": "Creature",
+  "tribe": "OverWorlders",
+  "subtypes": ["Guardian", "Muge"],
+  "rarity": "Ultra Rare",
+  "set": { "name": "Dawn of Perim", "number": 11 },
+  "artist": null,
+
+  "unique": true,
+  "loyal": true,
+
+  "base_stats": {
+    "courage": 50,
+    "power": 50,
+    "wisdom": 50,
+    "speed": 50,
+    "energy": 50
+  },
+  "stat_ranges": {
+    "courage": [40, 60],
+    "power": [40, 60],
+    "wisdom": [40, 60],
+    "speed": [40, 60],
+    "energy": [45, 55]
+  },
+
+  "mugic_counters": 1,
+  "elements": ["Fire", "Air", "Water", "Earth"],
+  "rules_text": "Heptadd can play Mugic of any tribe.",
+
+  "effects": [
+    {
+      "id": "eff-heptadd-cast-any-tribal-mugic",
+      "label": "May cast Mugic from any Tribe",
+      "type": "Innate",
+      "effect": {
+        "kind": "GrantProperty",
+        "property": "CastAnyTribeMugic",
+        "value": true
+      }
+    }
+  ],
+
+  "flavor_text": "Some in Perim believe Heptadd knows where The Cothica is."
+}

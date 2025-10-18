@@ -4,7 +4,6 @@
   "type": "Creature",
   "tribe": "OverWorlders",
   "subtypes": ["Hero"],
-  "unique": true,
 
   "rarity": "Ultra Rare",
   "set": {
@@ -12,6 +11,9 @@
     "number": 15
   },
   "artist": "Khary Randolph",
+
+  "unique": true,
+  "loyal": true,
 
   "base_stats": {
     "courage": 100,

@@ -13,6 +13,7 @@
   "artist": null,
 
   "unique": true,
+  "loyal": false,
 
   "base_stats": {
     "courage": 75,

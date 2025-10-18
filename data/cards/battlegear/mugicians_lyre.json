@@ -1,0 +1,24 @@
+{
+  "id": "BG-DOP-146-MUGICIANS-LYRE",
+  "name": "Mugician's Lyre",
+  "type": "BattleGear",
+  "rarity": "Common",
+  "set": { "name": "Dawn of Perim", "number": 146 },
+  "artist": null,
+
+  "unique": false,
+  "rules_text": "Sacrifice Mugician's Lyre: Add 1 Mugic counter to this Creature.",
+
+  "effects": [
+    {
+      "id": "eff-mugicians-lyre-sacrifice-add1",
+      "label": "Sacrifice: add 1 Mugic counter",
+      "type": "Triggered",
+      "trigger": { "event": "Sacrifice" },
+      "target": { "type": "EquippedCreature", "controller": "owner" },
+      "effect": { "kind": "AddMugicCounters", "amount": 1 }
+    }
+  ],
+
+  "flavor_text": null
+}

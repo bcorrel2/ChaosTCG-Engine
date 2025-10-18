@@ -4,8 +4,6 @@
   "type": "Creature",
   "tribe": "UnderWorlders",
   "subtypes": ["Conqueror", "Warrior"],
-  "unique": true,
-  "loyal": true,
 
   "rarity": "Ultra Rare",
   "set": {
@@ -13,6 +11,9 @@
     "number": 31
   },
   "artist": "Unknown",
+
+  "unique": true,
+  "loyal": true,
 
   "base_stats": {
     "courage": 95,
