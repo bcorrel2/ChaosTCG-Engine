@@ -39,6 +39,23 @@ impl From<&CreatureCard> for CreatureInstance {
     }
 }
 
+// struct
+pub struct Challenge {
+    pub discipline: String,
+    pub threshold: i16,
+    pub success_effect: Option<Effect>,
+}
+
+pub struct Side {
+    pub creatures: Vec<CreatureInstance>,
+}
+pub struct Board {
+    pub active_attacker_idx: usize,
+    pub active_defender_idx: usize,
+    pub attacker: Side,
+    pub defender: Side,
+}
+
 /* ---------- Simple helpers ---------- */
 
 fn parse_element(s: &str) -> Option<Element> {
@@ -164,12 +181,12 @@ fn stat_value(cre: &CreatureInstance, disc: &str) -> i32 {
 
 /* ---------- Public API for the test ---------- */
 
-pub fn equip_battlegear(cre: &mut CreatureInstance, gear: &BattleGearCard) {
+pub fn equip_battlegear(cre: &mut CreatureInstance, gear: &BattleGearCard, board: &mut Board) {
     cre.equipped_gear = Some(gear.clone());
-    apply_battlegear_effects(cre, gear);
+    apply_battlegear_effects(cre, gear, board);
 }
 
-fn apply_battlegear_effects(cre: &mut CreatureInstance, gear: &BattleGearCard) {
+fn apply_battlegear_effects(cre: &mut CreatureInstance, gear: &BattleGearCard, board: &mut Board) {
     for node in &gear.effects {
         let kind = node.node_type.to_ascii_lowercase();
 
@@ -210,7 +227,7 @@ fn apply_element_grant(cre: &mut CreatureInstance, grant: &ElementGrant) {
 
 use crate::engine::cards::{Effect, EffectKind};
 
-/// Apply a single effect to a creature's live stats.
+/// Apply a single effect
 /// Returns true if anything was applied.
 fn apply_effect_to_creature(cre: &mut CreatureInstance, eff: &Effect) -> bool {
     match eff.kind {
@@ -247,7 +264,7 @@ fn apply_effect_to_creature(cre: &mut CreatureInstance, eff: &Effect) -> bool {
 /// - Applies their effect to the equipped creature
 /// - Permanently removes the gear
 /// Returns true if a gear was sacrificed.
-pub fn sacrifice_equipped_gear(cre: &mut CreatureInstance) -> bool {
+pub fn sacrifice_equipped_gear(cre: &mut CreatureInstance, board: &mut Board) -> bool {
     // Take the gear off the creature (this consumes/unequips it)
     let Some(gear) = cre.equipped_gear.take() else { return false; };
 
@@ -346,6 +363,50 @@ pub fn add_location_attack_bonus(
     extra
 }
 
+/// Main Attacking Function
+pub fn resolve_attack_and_apply_effects(
+    att_idx: usize,
+    def_idx: usize,
+    attack: &AttackCard,
+    board: &mut Board,
+) -> i32 {
+    // compute lanes/base damage without mutating state
+    let dmg = {
+        let att = &board.attacker.creatures[att_idx];
+        let def = &board.defender.creatures[def_idx];
+        compute_attack_damage(att, def, attack)
+    };
+
+
+    // apply secondary effects
+    {
+        let att = &board.attacker.creatures[att_idx];
+        let def = &mut board.defender.creatures[def_idx];
+        apply_attack_secondary_effects(att, def, attack);
+    }
+
+    // apply multi-target effects
+    if attack_has_reveal_all_opp_gear(attack) {
+        reveal_all_opponent_gear(&mut board.defender);
+    }
+
+    dmg
+}
+
+/// --------------   Effect Helper Functions --------------------
+
+pub fn attack_has_reveal_all_opp_gear(attack: &AttackCard) -> bool {
+    attack.effects.iter().any(|wrapper| {
+        if let Some(effect) = &wrapper.effect {
+            matches!(effect.kind, EffectKind::RevealOpponentsBattlegear)
+        } else {
+            false
+        }
+    })
+}
+
+/// -------------------------------------------------------------
+
 pub fn compute_attack_damage(attacker: &CreatureInstance, _defender: &CreatureInstance, atk: &AttackCard) -> i32 {
     let mut dmg = atk.damage.base as i32;
 
@@ -385,4 +446,43 @@ pub fn compute_attack_damage(attacker: &CreatureInstance, _defender: &CreatureIn
 
 pub fn deal_damage(defender: &mut CreatureInstance, amount: i32) {
     defender.current_energy = (defender.current_energy - amount).max(0);
+}
+
+/// Applies on-play/secondary effects on an attack card
+pub fn apply_attack_secondary_effects(
+    attacker: &CreatureInstance,
+    defender: &mut CreatureInstance,
+    attack: &AttackCard,
+) {
+    for node in &attack.effects {
+        // If there is a condition (e.g., {"stat":"Element","operator":"==","value":"Air"}), check it against the attacker.
+        if let Some(cond) = &node.condition {
+            if !cond_passes(attacker, cond) { continue; }
+        }
+
+        // Targeting is simple here: Lightning Burst targets the opposing creature.
+        if let Some(eff) = &node.effect {
+            // For Lightning Burst we expect ModifyDiscipline { discipline: "Power", amount: -25 }
+            let _ = apply_effect_to_creature(defender, eff);
+        }
+
+        // If you later put a 'challenge' block on an attack, handle it similarly:
+        if let Some(ch) = &node.challenge {
+            // Only run when condition already passed (if any)
+            let val = stat_value(attacker, &ch.discipline);
+            if val >= ch.threshold as i32 {
+                apply_effect_to_creature(defender, &ch.success_effect);
+            }
+        }
+    }
+}
+
+pub fn reveal_all_opponent_gear(opponent: &mut Side) {
+    for creature in &mut opponent.creatures {
+        if let Some(gear) = creature.equipped_gear.as_mut() {
+            if !gear.revealed {
+                gear.revealed = true;
+            }
+        }
+    }
 }

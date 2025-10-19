@@ -5,8 +5,12 @@
   "rarity": "Super Rare",
   "set": { "name": "Dawn of Perim", "number": 167 },
   "artist": null,
+  
   "unique": false,
+  "revealed": false,
+  
   "rules_text": "Equipped Creature gains 10 Power and 10 Wisdom\\n\\nIf equipped Creature has at least 50 Courage it gains 10 Energy.\",",
+  
   "effects": [
     {
       "id": "eff-ring-naarin-courage50-energy10",

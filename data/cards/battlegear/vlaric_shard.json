@@ -10,6 +10,7 @@
   "artist": null,
 
   "unique": false,
+  "revealed": false,
 
   "rules_text": "Equipped Creature gains \"Earth 5 (Earth attacks made by this Creature deal an additional 5 damage.)\"",
 

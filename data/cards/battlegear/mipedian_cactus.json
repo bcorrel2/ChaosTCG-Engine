@@ -10,6 +10,7 @@
   "artist": null,
 
   "unique": false,
+  "revealed": false,
 
   "rules_text": "Equipped Creature gains 15 Wisdom. If the Equipped Creature is Mipedian, it gains \"Cost 1 Mugic counter — until end of turn, this Creature can move to any space on the board.\"",
 

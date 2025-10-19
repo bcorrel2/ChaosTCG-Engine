@@ -1,0 +1,26 @@
+{
+  "id": "ATK-LAVALANCHE-DOP106-v1",
+  "name": "Lavalanche",
+  "type": "Attack",
+  "rarity": "Super Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 106
+  },
+  "artist": "Edwin Nebres, Andrew Bradshaw, Axer",
+
+  "unique": false,
+  "build_points": 3,
+  
+  "rules_text": "",
+
+  "damage": {
+    "base": 10,
+    "fire": 5,
+    "air": 0,
+    "earth": 5,
+    "water": 0
+  },
+
+  "effects": []
+}

@@ -190,6 +190,8 @@ pub struct BattleGearCard {
     pub effects: Vec<EffectNode>,
     #[serde(default)]
     pub flavor_text: Option<String>,
+    pub unique: bool,
+    pub revealed: bool
 }
 
 /* --------------------------------- Mugic --------------------------------- */
@@ -357,6 +359,9 @@ pub enum EffectKind {
 
     // Pre-combat strike
     PreemptiveDamage,
+
+    // Post-combat effect
+    RevealOpponentsBattlegear,
 }
 
 /// Used by some BattleGear effects like "Fire 5".

@@ -25,14 +25,11 @@
 
   "effects": [
     {
-      "id": "eff-reveal-battlegear",
-      "label": "Reveal All Opponent Battlegear",
-      "type": "OnPlay",
-      "target": { "type": "Player", "controller": "opponent" },
+      "id": "eff-windslash-reveal-opp-gear",
+      "label": "Reveal all opponent Battlegear",
+      "type": "Immediate",
       "effect": {
-        "kind": "RevealCards",
-        "target_zone": "BattleGear",
-        "condition": { "face_down": true }
+        "kind": "RevealOpponentsBattlegear"
       }
     }
   ],

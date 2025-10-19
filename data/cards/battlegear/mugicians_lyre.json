@@ -7,6 +7,8 @@
   "artist": null,
 
   "unique": false,
+  "revealed": false,
+  
   "rules_text": "Sacrifice Mugician's Lyre: Add 1 Mugic counter to this Creature.",
 
   "effects": [

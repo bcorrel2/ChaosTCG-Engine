@@ -1,0 +1,24 @@
+{
+  "id": "ATK-VIPERLASH-DOP134-v1",
+  "name": "Viperlash",
+  "type": "Attack",
+  "rarity": "Rare",
+  "set": {
+    "name": "Dawn of Perim",
+    "number": 134
+  },
+  "artist": "Andrew Bradshaw, David Curiel",
+
+  "unique": false,
+  "build_points": 3,
+
+  "damage": {
+    "base": 15,
+    "fire": 0,
+    "air": 0,
+    "earth": 0,
+    "water": 0
+  },
+
+  "effects": []
+}
